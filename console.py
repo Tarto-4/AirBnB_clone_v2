@@ -114,17 +114,64 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """ Create an object of any class"""
-        if not args:
-            print("** class name missing **")
-            return
-        elif args not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+    """Create an object of any class with parameters."""
+    if not args:  # No arguments provided
+        print("** class name missing **")
+        return
+    args_list = args.split()  # Split into list of arguments
+    class_name = args_list.pop(0)  # Remove the class name
+    if class_name not in HBNBCommand.classes:  # Check class existence
+        print("** class doesn't exist **")
+        return
+
+    kwargs = {}
+    for param in args_list:
+        try:
+            key, value = param.split('=')
+            if value[0] == '"' and value[-1] == '"':  # Handle string values
+                value = value[1:-1].replace('\\"', '"').replace('_', ' ')
+            elif '.' in value:  # Handle float values
+                value = float(value)
+            else:  # Handle integer values
+                value = int(value)
+            kwargs[key] = value
+        except (ValueError, IndexError):
+            pass  # Skip invalid parameters
+
+    try:
+        new_instance = HBNBCommand.classes[class_name](**kwargs)
+        new_instance.save()  # Save using the object's method
         print(new_instance.id)
-        storage.save()
+    except Exception as e:  # Catch general exceptions
+        print(f"** Object creation failed: {e} **")
+
+# --- Test Function ---
+def do_test_params_create(self, args):
+    """Test parameter parsing in do_create."""
+    test_cases = [
+        ("create State name=\"California\"", {"name": "California"}),
+        ("create State name=\"Arizona\"", {"name": "Arizona"}),
+        (
+            "create Place city_id=\"0001\" user_id=\"0001\" name=\"My_little_house\" number_rooms=4 number_bathrooms=2 max_guest=10 price_by_night=300 latitude=37.773972 longitude=-122.431297",
+            {
+                "city_id": "0001",
+                "user_id": "0001",
+                "name": "My little house",
+                "number_rooms": 4,
+                "number_bathrooms": 2,
+                "max_guest": 10,
+                "price_by_night": 300,
+                "latitude": 37.773972,
+                "longitude": -122.431297,
+            },
+        ),
+        # Add more test cases here for invalid inputs...
+    ]
+
+    for test_input, expected_kwargs in test_cases:
+        print("Testing:", test_input)
+        self.do_create(test_input)
+
 
     def help_create(self):
         """ Help information for the create method """
