@@ -9,6 +9,9 @@ updates Nginx configuration, and restarts Nginx.
 
 # Install Nginx if not already installed
 if ! command -v nginx &> /dev/null; then
+    apt-get update
+    apt-get -y install nginx
+fi
         apt-get update
         apt-get -y install nginx
 fi
