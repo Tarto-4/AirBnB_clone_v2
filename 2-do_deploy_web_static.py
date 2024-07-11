@@ -5,7 +5,7 @@ from fabric.api import env, put, run
 from os.path import exists
 from datetime import datetime
 
-env.hosts = ['<IP web-01>', '<IP web-02>']  # Replace with your server IPs
+env.hosts = ['3.84.222.117', '34.207.253.96']  # Replace with your server IPs
 
 def do_deploy(archive_path):
     """
