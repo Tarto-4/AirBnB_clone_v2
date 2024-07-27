@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 
 @app.route('/', strict_slashes=False)
-def index():
+def hello_hbnb():
     """returns Hello HBNB!"""
     return 'Hello HBNB!'
 
@@ -33,7 +33,7 @@ def pythoniscool(text='is cool'):
 
 
 @app.route('/number/<int:n>', strict_slashes=False)
-def imanumber(n):
+def is_number(n):
     """display “n is a number” only if n is an integer"""
     return "{:d} is a number".format(n)
 
