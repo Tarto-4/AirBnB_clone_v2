@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-beggins of a Flask web application
+Flask application demonstrating a simple route.
 """
 
 from flask import Flask
