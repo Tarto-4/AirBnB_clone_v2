@@ -1,49 +1,34 @@
-#!/usr/bin/python3
-"""
-A simple Flask web application with various routes.
-"""
-from flask import Flask
+# web_flask/4-number_route.py
+from flask import Flask, render_template
+
+from models import storage
 
 app = Flask(__name__)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
+
+@app.teardown_appcontext
+def teardown_db(exception):
+    storage.close()
 
 @app.route('/', strict_slashes=False)
 def hello_hbnb():
-    """
-    Displays 'Hello HBNB!' at the root URL.
-    """
     return "Hello HBNB!"
 
 @app.route('/hbnb', strict_slashes=False)
 def hbnb():
-    """
-    Displays 'HBNB' at the /hbnb URL.
-    """
     return "HBNB"
 
 @app.route('/c/<text>', strict_slashes=False)
 def c_text(text):
-    """
-    Displays 'C ' followed by the value of the text variable.
-    Replaces underscores with spaces in the text variable.
-    """
-    return "C " + text.replace('_', ' ')
+    return "C {}".format(text.replace('_', ' '))
 
-@app.route('/python/', defaults={'text': 'is cool'}, strict_slashes=False)
-@app.route('/python/<text>', strict_slashes=False)
+@app.route('/python/<text>', strict_slashes=False, defaults={'text': 'is cool'})
 def python_text(text):
-    """
-    Displays 'Python ' followed by the value of the text variable.
-    Replaces underscores with spaces in the text variable.
-    Default value of text is 'is cool'.
-    """
-    return "Python " + text.replace('_', ' ')
+    return "Python {}".format(text.replace('_', ' '))
 
 @app.route('/number/<int:n>', strict_slashes=False)
-def number(n):
-    """
-    Displays 'n is a number' only if n is an integer.
-    """
-    return f"{n} is a number"
+def is_number(n):
+    return "{} is a number".format(n)
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)

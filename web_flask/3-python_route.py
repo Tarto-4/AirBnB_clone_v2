@@ -1,29 +1,30 @@
-#!/usr/bin/python3
-"""Flask app with basic routes and text handling."""
+# web_flask/3-python_route.py
+from flask import Flask, render_template
 
-from flask import Flask
+from models import storage
 
 app = Flask(__name__)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
+
+@app.teardown_appcontext
+def teardown_db(exception):
+    storage.close()
 
 @app.route('/', strict_slashes=False)
-def hello():
-    """Returns 'Hello HBNB!'"""
-    return 'Hello HBNB!'
+def hello_hbnb():
+    return "Hello HBNB!"
 
 @app.route('/hbnb', strict_slashes=False)
 def hbnb():
-    """Returns 'HBNB'"""
-    return 'HBNB'
+    return "HBNB"
 
 @app.route('/c/<text>', strict_slashes=False)
 def c_text(text):
-    """Returns 'C <text>' with underscores replaced by spaces."""
-    return f'C {text.replace("_", " ")}'
+    return "C {}".format(text.replace('_', ' '))
 
-@app.route('/python/<text>', defaults={'text': 'is cool'}, strict_slashes=False)
+@app.route('/python/<text>', strict_slashes=False, defaults={'text': 'is cool'})
 def python_text(text):
-    """Returns 'Python <text>' with underscores replaced by spaces (default: 'is cool')."""
-    return f'Python {text.replace("_", " ")}'
+    return "Python {}".format(text.replace('_', ' '))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

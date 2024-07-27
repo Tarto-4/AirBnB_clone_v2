@@ -1,23 +1,18 @@
-#!/usr/bin/python3
-"""
-Flask application demonstrating a simple route.
+# web_flask/0-hello_route.py
+from flask import Flask, render_template
 
-This script defines a Flask application that listens on 0.0.0.0 port 5000
-and displays "Hello HBNB!" when accessing the root URL (/).
-"""
-
-from flask import Flask
+from models import storage
 
 app = Flask(__name__)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
+@app.teardown_appcontext
+def teardown_db(exception):
+    storage.close()
 
 @app.route('/', strict_slashes=False)
 def hello_hbnb():
-    """
-    Displays "Hello HBNB!" on the root path.
-    """
     return "Hello HBNB!"
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
